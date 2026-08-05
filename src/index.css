@@ -1,0 +1,151 @@
+@import "tailwindcss";
+
+/* Class-based dark mode: toggled by ThemeProvider adding/removing `.dark` on
+   <html>, not by prefers-color-scheme — this is a user-facing toggle, not a
+   system-preference follower. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  /* Base */
+  --color-cream: #fffbf3;
+  --color-cream-soft: #fff6e8;
+  --color-espresso: #2b1b12;
+  --color-espresso-soft: #6b5b4f;
+  --color-line: #efe1cc;
+
+  /* Brand */
+  --color-amber: #d97706;
+  --color-amber-dark: #b45309;
+
+  /* Chapter accent rotation — one per friend, cycling */
+  --color-terracotta: #c2410c;
+  --color-rose: #e11d48;
+  --color-sage: #059669;
+  --color-teal: #0e7490;
+  --color-plum: #a21caf;
+  --color-sunset: #db2777;
+  --color-gold: #ca8a04;
+
+  /* Type — Noto Sans Devanagari is a fallback for Marathi story text; Quicksand
+     has no Devanagari glyphs, so the browser uses it only for those characters. */
+  --font-display: "Caveat", cursive;
+  --font-sans: "Quicksand", "Noto Sans Devanagari", ui-sans-serif, system-ui, sans-serif;
+
+  --animate-float: float 7s ease-in-out infinite;
+  --animate-drift: drift 16s linear infinite;
+  --animate-pulse-glow: pulse-glow 2.4s ease-in-out infinite;
+}
+
+/* Punk-neon dark mode: redefining the same tokens under .dark means every
+   existing bg-cream/text-espresso/border-line/bg-amber usage across the app
+   re-themes automatically — Tailwind v4 utilities reference these as real CSS
+   variables, not compile-time values, so no component classNames change. */
+.dark {
+  --color-cream: #0a0a0f;
+  --color-cream-soft: #12121a;
+  --color-espresso: #f2f2fa;
+  --color-espresso-soft: #a8a8c8;
+  --color-line: #2a2a3a;
+
+  --color-amber: #ff2e9f;
+  --color-amber-dark: #ff6ec7;
+}
+
+@keyframes pulse-glow {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-16px) rotate(3deg);
+  }
+}
+
+@keyframes drift {
+  0% {
+    transform: translateY(0) translateX(0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-110vh) translateX(var(--drift-x, 40px));
+    opacity: 0;
+  }
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-cream text-espresso font-sans antialiased;
+    transition:
+      background-color 500ms ease,
+      color 500ms ease;
+  }
+
+  ::selection {
+    background: var(--color-amber);
+    color: white;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-amber);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+}
+
+/* Full-screen "story" scroll-snap experience */
+.story {
+  height: 100dvh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scroll-snap-type: y mandatory;
+  scrollbar-width: none;
+}
+
+.story::-webkit-scrollbar {
+  display: none;
+}
+
+.story > section {
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  height: 100dvh;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .story {
+    scroll-snap-type: none;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

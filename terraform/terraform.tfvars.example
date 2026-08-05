@@ -1,0 +1,10 @@
+# Copy to terraform.tfvars (gitignored) and adjust if you don't want the
+# defaults in variables.tf.
+
+aws_region             = "us-east-1"
+bucket_name_prefix     = "happy-friendship-day"
+cloudfront_price_class = "PriceClass_100"
+
+# Optional — from `aws sts get-caller-identity --query Account --output text`.
+# Guards terraform plan/apply against running against the wrong AWS account.
+# expected_account_id = "123456789012"
